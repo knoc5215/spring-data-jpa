@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Entity(name = "Account") // 테이블 맵핑. name은 table이름
 public class Account {  // User는 keyword이므로 되도록 사용하지 말것
-    @Id // ID로 쓴다
+    @Id // ID로 쓴다 (식별자)
     @GeneratedValue // 자동생성값, DB마다 생성전략이 다를 수 있
     private Long id;
 
@@ -22,6 +22,12 @@ public class Account {  // User는 keyword이므로 되도록 사용하지 말�
 
     @Transient  // 컬럼으로 맵핑을 안해준다. 순수히 객체로만 사용할때
     private String no;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name="street", column = @Column(name="home_street"))
+    })
+    private Address address;
 
 
     public Long getId() {
