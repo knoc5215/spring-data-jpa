@@ -24,10 +24,18 @@ public class JpaRunner implements ApplicationRunner {
         account.setUsername("WON");
         account.setPassword("hibernate");
 
+        Study study = new Study();
+        study.setName("Spring Data JPA");
+
+        /* 양방향 관계 설정하기 */
+        account.addStudy(study);
+
+
         // 하이버네이트의 가장 핵심적인 API는 Session이다.
         // 하이버네이트 Session을 통한 save
         Session session = entityManager.unwrap(Session.class);
         session.save(account);
+        session.save(study);
 
 
         // JPA를 통한 save

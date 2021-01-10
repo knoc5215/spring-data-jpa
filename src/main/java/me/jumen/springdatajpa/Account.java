@@ -1,16 +1,26 @@
 package me.jumen.springdatajpa;
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity(name = "Account") // 테이블 맵핑. name은 table이름
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString
 public class Account {  // User는 keyword이므로 되도록 사용하지 말것
-    @Id // ID로 쓴다 (식별자)
-    @GeneratedValue // 자동생성값, DB마다 생성전략이 다를 수 있
+    @Id             // ID로 쓴다 (식별자)
+    @GeneratedValue // 자동생성값, DB마다 생성전략이 다를 수 있다.
     private Long id;
 
-    @Column(nullable = false, unique = true)// 생략되어있는거랑 마찬가이다. ddl-auto가 update인 경우 Column 속성을 변경하면 이미 만들어져 있기 때문에 오류가 난다. 그래서 보통 개발시 create가 간편하다.
+    @Column(nullable = false, unique = true)    // 생략되어있는거랑 마찬가이다. ddl-auto가 update인 경우 Column 속성을 변경하면 이미 만들어져 있기 때문에 오류가 난다. 그래서 보통 개발시 create가 간편하다.
     private String username;
 
     private String password;
@@ -25,32 +35,21 @@ public class Account {  // User는 keyword이므로 되도록 사용하지 말�
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name="street", column = @Column(name="home_street"))
+            @AttributeOverride(name = "street", column = @Column(name = "home_street"))
     })
     private Address address;
 
+    @OneToMany(mappedBy = "owner")  // 한 Account는 여러 study를 만들 수 이있다. 끝쪽이 Many면 Collection이다
+    private Set<Study> studies = new HashSet<>();
 
-    public Long getId() {
-        return id;
+
+    public void addStudy(Study study) {
+        this.getStudies().add(study);    // optional이지만 객체지향적으로 서로에 대한 관계를 넣어줄 것
+        study.setOwner(this);
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void removeStudy(Study study) {
+        this.getStudies().remove(study);    // optional이지만 객체지향적으로 서로에 대한 관계를 넣어줄 것
+        study.setOwner(null);
     }
 }
