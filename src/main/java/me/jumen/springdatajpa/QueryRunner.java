@@ -2,7 +2,6 @@ package me.jumen.springdatajpa;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,7 +18,7 @@ import java.util.List;
  * 2. 메서드에만 붙일 수도 있다.
  * */
 
-@Component
+//@Component
 @Transactional
 public class QueryRunner implements ApplicationRunner {
 
