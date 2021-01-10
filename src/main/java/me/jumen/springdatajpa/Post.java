@@ -17,7 +17,11 @@ public class Post {
 
     private String title;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)    // 전파하라
+    /*
+    * CascadeType.ALL 전파하라
+    * OneToMany에서 fetch default = LAZY
+    * */
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Comment> comments = new HashSet<>();
 
     public void addComment(Comment comment) {

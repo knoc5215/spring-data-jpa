@@ -3,10 +3,7 @@ package me.jumen.springdatajpa;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -19,7 +16,10 @@ public class Comment {
 
     private String comment;
 
-    @ManyToOne
+    /*
+     * ManyToOne에서 fetch default = EAGER
+     * */
+    @ManyToOne(fetch = FetchType.EAGER)
     private Post post;
 
 
