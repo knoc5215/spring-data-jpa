@@ -10,10 +10,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@ToString
+@ToString(exclude = "owner")    // 상호참조 스택오버플로우 방지
 public class Study {
     @Id
     @GeneratedValue
