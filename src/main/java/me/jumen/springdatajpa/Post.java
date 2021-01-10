@@ -2,14 +2,20 @@ package me.jumen.springdatajpa;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@NamedQueries({
+        @NamedQuery(name="all_post", query = "SELECT p FROM Post AS p")
+})
+
 @Entity
 @Getter
 @Setter
+@ToString
 public class Post {
     @Id
     @GeneratedValue
