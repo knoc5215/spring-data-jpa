@@ -25,7 +25,7 @@ public class Comment {
 
     private Date created;
 
-    private Integer likeCount;
+    private Integer likeCount = 0;
 
 
 }
