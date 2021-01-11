@@ -41,7 +41,8 @@ class CommentRepositoryTest {
         Optional<Comment> byId = commentRepository.findById(100l);
         assertThat(byId).isEmpty(); // optional은 null을 리턴하지 않기에 empty를 체크해야 함.
 
-
     }
+
+
 
 }
