@@ -9,6 +9,8 @@ import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -85,6 +87,20 @@ class CommentRepositoryTest {
         newComment.setComment(comment);
         newComment.setLikeCount(likeCount);
         commentRepository.save(newComment);
+    }
+
+    @Test
+    public void asyncTest() throws ExecutionException, InterruptedException {
+
+        this.createComment(100, "spring data jpa");
+        this.createComment(55, "HIBERNATE SPRING");
+
+        Future<List<Comment>> future = commentRepository.findByCommentContainsIgnoreCaseOrderByIdDesc("Spring");
+
+
+        System.out.println("isDone : " + future.isDone());
+        List<Comment> comments = future.get();// 결과가 나올때까지 기다림(blocking)
+        comments.forEach(c -> System.out.println(c.toString()));
     }
 
 
