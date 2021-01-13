@@ -8,7 +8,8 @@ import org.springframework.data.repository.query.QueryLookupStrategy;
 
 @SpringBootApplication
 @EnableJpaRepositories(queryLookupStrategy = QueryLookupStrategy.Key.CREATE_IF_NOT_FOUND
-        , repositoryImplementationPostfix = "Impl")
+        , repositoryImplementationPostfix = "Impl"
+        , repositoryBaseClass = CommonRepository.class)
 @Import(JumenRegister.class)
 public class Application {
 

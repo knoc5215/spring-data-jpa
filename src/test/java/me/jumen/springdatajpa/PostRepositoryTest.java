@@ -82,5 +82,20 @@ class PostRepositoryTest {
 
     }
 
+    @Autowired
+    SendRepository sendRepository;
+
+    @Test
+    public void commonTest() {
+        Post post = new Post();
+        post.setTitle("CommonRepository");
+
+        assertThat(sendRepository.contains(post)).isFalse();    // transient 상태
+
+        sendRepository.save(post);
+
+        assertThat(sendRepository.contains(post)).isTrue();    // persistent 상태
+    }
+
 
 }
