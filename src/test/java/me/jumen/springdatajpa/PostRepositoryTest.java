@@ -64,5 +64,23 @@ class PostRepositoryTest {
 
     }
 
+    @Test
+    public void customTest() {
+        Post post = new Post();
+        post.setTitle("custom");
+        postRepository.save(post);  // select가 필요하다가고 hibernate가 판단하여 flushing이 일어나서 insert query exec
+        postRepository.findMyPost();
+
+        /**<delete query가 실행되지 않았던 이유>
+         * entityManager가 removed 상태로 변경시켰지만, 실제로 DB sync는 하지 않는다.
+         * @Transactional이 붙어있는 스프링의 모든 테스트는 기본적으로 ROLLBACK 트랜잭션이다.
+         * Hibernate는 ROLLBACK 트랜잭션의 경우 필요없는 query는 실행하지 않는다.
+         */
+        postRepository.delete(post);
+
+        postRepository.flush(); // 하지만 강제로 flush()를 호출하면 query를 실행한다.
+
+    }
+
 
 }

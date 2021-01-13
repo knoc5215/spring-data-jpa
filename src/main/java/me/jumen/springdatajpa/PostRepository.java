@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * RepositoryBeanDefinitionRegistrarSupport 이 implements ImportBeanDefinitionRegistrar(핵심) 하고
  * @Override registerBeanDefinitions() method
  */
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, PostCustomRepository<Post> {
 
     Page<Post> findByTitleContains(String title, Pageable pageable);
 
