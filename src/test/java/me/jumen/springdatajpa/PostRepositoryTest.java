@@ -3,6 +3,8 @@ package me.jumen.springdatajpa;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.Rollback;
@@ -10,10 +12,9 @@ import org.springframework.test.annotation.Rollback;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
-        // slicing test using h2 database
+@DataJpaTest// slicing test using h2 database
+@Import(PostRepositoryTestConfig.class)
 class PostRepositoryTest {
 
     @Autowired
@@ -73,7 +74,7 @@ class PostRepositoryTest {
 
         /**<delete query가 실행되지 않았던 이유>
          * entityManager가 removed 상태로 변경시켰지만, 실제로 DB sync는 하지 않는다.
-         * @Transactional이 붙어있는 스프링의 모든 테스트는 기본적으로 ROLLBACK 트랜잭션이다.
+         * @Transactional이 붙어있는 스프R링의 모든 테스트는 기본적으로 ROLLBACK 트랜잭션이다.
          * Hibernate는 ROLLBACK 트랜잭션의 경우 필요없는 query는 실행하지 않는다.
          */
         postRepository.delete(post);
@@ -82,19 +83,21 @@ class PostRepositoryTest {
 
     }
 
+
     @Autowired
-    SendRepository sendRepository;
+    ApplicationContext applicationContext;
 
     @Test
-    public void commonTest() {
+    public void eventTest() {
+        //Given
         Post post = new Post();
-        post.setTitle("CommonRepository");
+        post.setTitle("post event publish");
+        //When
+       postRepository.save(post.publish());
 
-        assertThat(sendRepository.contains(post)).isFalse();    // transient 상태
 
-        sendRepository.save(post);
 
-        assertThat(sendRepository.contains(post)).isTrue();    // persistent 상태
+
     }
 
 
