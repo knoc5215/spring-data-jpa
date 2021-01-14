@@ -1,5 +1,6 @@
 package me.jumen.springdatajpa;
 
+import com.querydsl.core.types.Predicate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -70,7 +72,7 @@ class PostRepositoryTest {
         Post post = new Post();
         post.setTitle("custom");
         postRepository.save(post);  // select가 필요하다가고 hibernate가 판단하여 flushing이 일어나서 insert query exec
-        postRepository.findMyPost();
+        postRepository.findAll();
 
         /**<delete query가 실행되지 않았던 이유>
          * entityManager가 removed 상태로 변경시켰지만, 실제로 DB sync는 하지 않는다.
@@ -95,8 +97,20 @@ class PostRepositoryTest {
         //When
        postRepository.save(post.publish());
 
+    }
 
+    @Test
+    public void querydslTest() {
+        //Given
+        Post post = new Post();
+        post.setTitle("post querydsl");
+        postRepository.save(post.publish());
 
+        //When
+        Predicate predicate = QPost.post.title.contains("query");
+        Optional<Post> one = postRepository.findOne(predicate);
+        //Then
+        assertThat(one).isNotEmpty();
 
     }
 

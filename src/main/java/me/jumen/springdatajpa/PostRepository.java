@@ -2,7 +2,7 @@ package me.jumen.springdatajpa;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 /**
  * JPA의 기본적인 동작 원리와 빈 등록
@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * RepositoryBeanDefinitionRegistrarSupport 이 implements ImportBeanDefinitionRegistrar(핵심) 하고
  * @Override registerBeanDefinitions() method
  */
-public interface PostRepository extends JpaRepository<Post, Long>, PostCustomRepository<Post>{
+public interface PostRepository extends YourRepository<Post, Long>, QuerydslPredicateExecutor<Post> {
 
     Page<Post> findByTitleContains(String title, Pageable pageable);
 
