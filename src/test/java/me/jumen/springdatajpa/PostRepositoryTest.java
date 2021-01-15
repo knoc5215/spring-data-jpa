@@ -9,6 +9,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.test.annotation.Rollback;
 
 import javax.persistence.EntityManager;
@@ -179,10 +181,28 @@ class PostRepositoryTest {
 
     @Test
     @DisplayName("@NamedQuery, @Query 테스트")
-    public void findByTitle() {
+    public void findByTitleNamedQueryAndQuery() {
         savePost();
 
         List<Post> byTitle = postRepository.findByTitle("Spring Data Jpa");
+        assertThat(byTitle.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("@Query Sort 테스트")
+    public void findByTitleQuerySort() {
+        savePost();
+
+        List<Post> byTitle = postRepository.findByTitle("Spring Data Jpa", Sort.by("title"));   // property, alias 아니라면 error
+        assertThat(byTitle.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("@Query Sort Jpa.unsafe() 테스트")
+    public void findByTitleQuerySortJpaUnsafe() {
+        savePost();
+
+        List<Post> byTitle = postRepository.findByTitle("Spring Data Jpa", JpaSort.unsafe("LENGTH(title)"));
         assertThat(byTitle.size()).isEqualTo(1);
     }
 

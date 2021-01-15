@@ -2,6 +2,7 @@ package me.jumen.springdatajpa;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
@@ -25,14 +26,23 @@ public interface PostRepository extends YourRepository<Post, Long>, QuerydslPred
     List<Post> findByTitleStartsWith(String title);
 
     /**
-     * NamedQuery도 Domain 클래스에 타입-세이프 하지않은 JPQL로 기입해야하기에 지저분해진다.
+     * @NamedQuery
+     * Domain 클래스에 타입-세이프 하지않은 JPQL로 기입해야하기에 지저분해진다.
      * */
     //List<Post> findByTitle(String title);
 
     /**
-     * 깔끔한 @Query를 권장한다.
-     * */
+     * @Query 깔끔하니까 권장한다.
+     */
     @Query("SELECT p FROM Post AS p WHERE p.title = ?1")
     List<Post> findByTitle(String title);
+
+    /**
+     * Alias 줄 수 있음
+     *
+     * @Query("SELECT p, p.title AS pTitle FROM Post AS p WHERE p.title = ?1")
+     */
+    @Query("SELECT p FROM Post AS p WHERE p.title = ?1")
+    List<Post> findByTitle(String title, Sort sort);
 
 }
