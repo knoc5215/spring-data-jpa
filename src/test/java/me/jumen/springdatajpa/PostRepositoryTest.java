@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.Rollback;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
@@ -95,7 +97,7 @@ class PostRepositoryTest {
         Post post = new Post();
         post.setTitle("post event publish");
         //When
-       postRepository.save(post.publish());
+        postRepository.save(post.publish());
 
     }
 
@@ -111,6 +113,57 @@ class PostRepositoryTest {
         Optional<Post> one = postRepository.findOne(predicate);
         //Then
         assertThat(one).isNotEmpty();
+
+    }
+
+    @PersistenceContext
+    EntityManager entityManager;
+
+    /**
+     * save()
+     * 새로운 객체라면 persist()를 호출한다.
+     * 새로운 객체가 아닐 경우는 merge()를 호출한.
+     */
+    @Test
+    public void saveAndUpdateTest() {
+        /**
+         * @Id가 null이면 Transient 상태로 판단
+         * */
+        Post post = new Post();
+        post.setTitle("JPA");
+        Post save = postRepository.save(post);// persist -> insert
+
+        // post가 PersistenceContext에서 관리(캐싱)되는 상태이기 때문
+        assertThat(entityManager.contains(save)).isTrue();
+        assertThat(entityManager.contains(post)).isTrue();
+        assertThat(post == save);
+
+
+        /**
+         * @Id가 not null이면 Detached 상태로 판단
+         * */
+        Post postUpdate = new Post();
+        postUpdate.setId(post.getId());
+        postUpdate.setTitle("HIBERNATE");
+        // 리턴받은 updatedPost가 영속화된다.
+        // merge에 넘긴 entity의 복사본을 만들고, 이를 persistent 상태로 변경하고 이 복사본을 리턴한다
+        // DB에 sync를 하기에 상태변화를 DB에 update 한다 (Id가 DB에 해당하는게 없다면 INSERT)
+        Post updatedPost = postRepository.save(postUpdate);// merge -> update
+
+//        postUpdate.setTitle("isTransient"); // postUpdate는 Transient 상태라 PersistentContext가 관리대상이 아니라서, 실제 save가 발생하는 시점(Write Behind)에 반영되지 않는다.
+        updatedPost.setTitle("isPersistent");   // updatedPost는 persistent 상태이기에, write behind 시점에 이 부분이 반영된다.
+        assertThat(entityManager.contains(updatedPost)).isTrue();   // 영속화 O
+        assertThat(entityManager.contains(postUpdate)).isFalse();    // 영속화 X
+        assertThat(post == save);
+
+        List<Post> all = postRepository.findAll();
+        assertThat(all.size()).isEqualTo(1);
+
+        /**
+         * Best practice는 parameter로 전달한 instance 대신에
+         * return받은 instance를 항상 사용하는 것이다.
+         * */
+
 
     }
 
