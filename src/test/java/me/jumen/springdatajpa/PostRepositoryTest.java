@@ -215,10 +215,45 @@ class PostRepositoryTest {
         assertThat(byTitle.size()).isEqualTo(1);
     }
 
-    private void savePost() {
+    /**
+     * 한 @Transactional 내에서는 Persistent 캐시가 유지된다
+     */
+
+    @Test
+    @DisplayName("update title")
+    public void updateTitle() {
+        Post post = savePost(); // persistent 상태 (1차 캐시)
+
+        String changeTitle = "hibernate";
+        int update = postRepository.updateTitle(changeTitle, post.getId()); // DB에 update query가 발생했지만
+
+        assertThat(update).isEqualTo(1);
+
+        Optional<Post> byId = postRepository.findById(post.getId());    // post가 아직 1차 캐시 중이라 DB에 가지않고, 캐싱하고 있던 것을 참조한
+        assertThat(byId.get().getTitle()).isEqualTo(changeTitle);
+
+    }
+
+    @Test
+    @DisplayName("update title")
+    public void recommendUpdateTitle() {
+        Post spring = savePost();
+        spring.setTitle("hibernate");
+
+        // 명시적으로 update를 호출하진 않았지만
+        // find하기 전에 DB Sync를 해야하는 것을 hibernate가 알기에
+        // find 전에 변경해주면 DB에 Sync를 미리 맞춘 후 select 한다
+        List<Post> all = postRepository.findAll();
+        assertThat(all.get(0).getTitle()).isEqualTo("hibernate");
+
+    }
+
+    private Post savePost() {
         Post post = new Post();
         post.setTitle("Spring Data Jpa");
         Post save = postRepository.save(post);
+
+        return save;
     }
 
 

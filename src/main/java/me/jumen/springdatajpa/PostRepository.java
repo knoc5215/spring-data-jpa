@@ -3,6 +3,7 @@ package me.jumen.springdatajpa;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
@@ -53,12 +54,20 @@ public interface PostRepository extends YourRepository<Post, Long>, QuerydslPred
     @Query("SELECT p FROM Post AS p WHERE p.title = :title")
     List<Post> findByTitle(@Param("title") String title, Sort sort);
 
+
     /**
      * SpEL
+     *
      * @Query에서 엔티티 이름을 미리정의가 되어있는 #{#entityName} 으로 표현할 수 있다
      * @Entity("entityName")으로 이름을 바꿔도, SpEL을 통해 @Query의 FROM 을 수정할 필요가 없다.
-     * */
+     */
 //    @Query("SELECT p FROM #{#entityName} AS p WHERE p.title = :title")
 //    List<Post> findByTitle(@Param("title") String title, Sort sort);
+
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)    // flush -> update query -> PersistentContext를 clear -> DB에서 가져온다(context를 비워줘서 캐시에 없으니까)
+    @Query("UPDATE Post p Set p.title = ?1 WHERE p.id = ?2")
+    int updateTitle(String hibernate, Long id);
+
 
 }
