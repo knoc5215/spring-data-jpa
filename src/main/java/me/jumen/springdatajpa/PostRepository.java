@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -42,7 +43,22 @@ public interface PostRepository extends YourRepository<Post, Long>, QuerydslPred
      *
      * @Query("SELECT p, p.title AS pTitle FROM Post AS p WHERE p.title = ?1")
      */
-    @Query("SELECT p FROM Post AS p WHERE p.title = ?1")
-    List<Post> findByTitle(String title, Sort sort);
+//    @Query("SELECT p FROM Post AS p WHERE p.title = ?1")
+//    List<Post> findByTitle(String title, Sort sort);
+
+    /**
+     * @Named Parameter
+     * @Param을 이용한 ?1 채번 대체
+     */
+    @Query("SELECT p FROM Post AS p WHERE p.title = :title")
+    List<Post> findByTitle(@Param("title") String title, Sort sort);
+
+    /**
+     * SpEL
+     * @Query에서 엔티티 이름을 미리정의가 되어있는 #{#entityName} 으로 표현할 수 있다
+     * @Entity("entityName")으로 이름을 바꿔도, SpEL을 통해 @Query의 FROM 을 수정할 필요가 없다.
+     * */
+//    @Query("SELECT p FROM #{#entityName} AS p WHERE p.title = :title")
+//    List<Post> findByTitle(@Param("title") String title, Sort sort);
 
 }

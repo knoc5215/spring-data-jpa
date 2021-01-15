@@ -206,6 +206,15 @@ class PostRepositoryTest {
         assertThat(byTitle.size()).isEqualTo(1);
     }
 
+    @Test
+    @DisplayName("@Named Parameter 테스트")
+    public void findByTitleQueryNamedParameter() {
+        savePost();
+
+        List<Post> byTitle = postRepository.findByTitle("Spring Data Jpa", Sort.by("title"));   // property, alias 아니라면 error
+        assertThat(byTitle.size()).isEqualTo(1);
+    }
+
     private void savePost() {
         Post post = new Post();
         post.setTitle("Spring Data Jpa");
