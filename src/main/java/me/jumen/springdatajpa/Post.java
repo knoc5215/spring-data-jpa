@@ -10,7 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @NamedQueries({
-        @NamedQuery(name = "all_post", query = "SELECT p FROM Post AS p")
+        @NamedQuery(name = "all_post", query = "SELECT p FROM Post AS p"),
+        @NamedQuery(name = "Post.findByTitle", query = "SELECT p FROM Post AS p WHERE p.title = ?1")
 })
 
 @Entity

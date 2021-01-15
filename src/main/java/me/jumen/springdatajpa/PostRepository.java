@@ -2,7 +2,10 @@ package me.jumen.springdatajpa;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+
+import java.util.List;
 
 /**
  * JPA의 기본적인 동작 원리와 빈 등록
@@ -18,5 +21,18 @@ public interface PostRepository extends YourRepository<Post, Long>, QuerydslPred
     Page<Post> findByTitleContains(String title, Pageable pageable);
 
     long countByTitleContains(String title);
+
+    List<Post> findByTitleStartsWith(String title);
+
+    /**
+     * NamedQuery도 Domain 클래스에 타입-세이프 하지않은 JPQL로 기입해야하기에 지저분해진다.
+     * */
+    //List<Post> findByTitle(String title);
+
+    /**
+     * 깔끔한 @Query를 권장한다.
+     * */
+    @Query("SELECT p FROM Post AS p WHERE p.title = ?1")
+    List<Post> findByTitle(String title);
 
 }

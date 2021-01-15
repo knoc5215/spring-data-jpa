@@ -1,6 +1,7 @@
 package me.jumen.springdatajpa;
 
 import com.querydsl.core.types.Predicate;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -165,6 +166,30 @@ class PostRepositoryTest {
          * */
 
 
+    }
+
+    @Test
+    @DisplayName("startWith Title 테스트")
+    public void findByTitleStartsWith() {
+        savePost();
+
+        List<Post> byTitleStartsWith = postRepository.findByTitleStartsWith("Spring");
+        assertThat(byTitleStartsWith.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("@NamedQuery, @Query 테스트")
+    public void findByTitle() {
+        savePost();
+
+        List<Post> byTitle = postRepository.findByTitle("Spring Data Jpa");
+        assertThat(byTitle.size()).isEqualTo(1);
+    }
+
+    private void savePost() {
+        Post post = new Post();
+        post.setTitle("Spring Data Jpa");
+        Post save = postRepository.save(post);
     }
 
 
