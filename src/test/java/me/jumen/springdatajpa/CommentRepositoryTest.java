@@ -21,6 +21,7 @@ class CommentRepositoryTest {
     @Autowired
     CommentRepository commentRepository;
 
+
     @Test
     public void crudRepositoryTest() {
         //When
@@ -101,6 +102,28 @@ class CommentRepositoryTest {
         System.out.println("isDone : " + future.isDone());
         List<Comment> comments = future.get();// 결과가 나올때까지 기다림(blocking)
         comments.forEach(c -> System.out.println(c.toString()));
+    }
+
+    @Test
+    public void getComment() {
+
+        /**
+         * 1. @EntityGraph(value = "Comment.post")
+         * 2. @NamedEntityGraph(name = "Comment.post", attributeNodes = @NamedAttributeNode("post"))
+         * 엔터티네임이 post에 해당하는 엔터티 애트리뷰트는 EAGER 로 가져온다
+         * */
+        commentRepository.getById(1l);
+
+        System.out.println("=================");
+
+        /**
+         * spring-data-jpa가 기본으로 제공하는 findById는
+         * Fetch 기본 전략이 LAZY 로 가져오기 떄문에
+         * 바로 못가져온다.
+         * */
+        commentRepository.findById(1l);
+
+
     }
 
 
