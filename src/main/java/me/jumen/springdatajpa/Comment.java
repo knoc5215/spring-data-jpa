@@ -29,5 +29,11 @@ public class Comment {
 
     private Integer likeCount = 0;
 
+    private int up;
+
+    private int down;
+
+    private boolean best;
+
 
 }

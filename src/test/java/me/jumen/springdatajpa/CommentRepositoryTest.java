@@ -21,6 +21,9 @@ class CommentRepositoryTest {
     @Autowired
     CommentRepository commentRepository;
 
+    @Autowired
+    PostRepository postRepository;
+
 
     @Test
     public void crudRepositoryTest() {
@@ -105,8 +108,7 @@ class CommentRepositoryTest {
     }
 
     @Test
-    public void getComment() {
-
+    public void getCommentWithEntityGraph() {
         /**
          * 1. @EntityGraph(value = "Comment.post")
          * 2. @NamedEntityGraph(name = "Comment.post", attributeNodes = @NamedAttributeNode("post"))
@@ -122,8 +124,53 @@ class CommentRepositoryTest {
          * 바로 못가져온다.
          * */
         commentRepository.findById(1l);
+    }
 
+    @Test
+    public void getCommentByPostId() {
+        /* 기본적인 쿼리 메서드로 호출하면 모든 컬럼을 가져오는 것을 볼 수 있다. */
+//        commentRepository.findByPost_id(1l);
+    }
 
+    @Test
+    public void getCommentSummaryByPostIdOpenProjection() {
+        /**
+         * Closed Projection - 한정적인 컬럼들만 가져온다
+         * COLUMN - comment, up, down
+         * */
+//        commentRepository.findByPost_id(1l);
+    }
+
+    @Test
+    public void getCommentSummaryByPostId() {
+        Post post = new Post();
+        post.setTitle("jpa");
+        Post savedPost = postRepository.save(post);
+
+        Comment comment = new Comment();
+        comment.setComment("spring data jpa projection");
+        comment.setPost(savedPost);
+        comment.setUp(10);
+        comment.setDown(1);
+        commentRepository.save(comment);
+
+        /**
+         * Dynamic Projection
+         * Projection 메서드 하나만 정의하고, 실제 Projection type은 parameter로 전달하여
+         * 별도의 쿼리 메서드를 추가하지 않고 다양하게 만들 수 있다.
+         * */
+
+        /* CommentSummary */
+        commentRepository.findByPost_id(1l, CommentSummary.class).forEach(c -> {
+            System.out.println("=====================");
+            System.out.println(c.getVotes());
+        });
+
+        /* CommentOnly */
+        commentRepository.findByPost_id(1l, CommentOnly.class).forEach(c -> {
+            System.out.println("=====================");
+            System.out.println(c.getComment());
+        });
     }
 
 

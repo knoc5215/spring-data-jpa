@@ -34,4 +34,11 @@ public interface CommentRepository extends MyRepository<Comment, Long> {
     @EntityGraph(attributePaths = {"post"})
     Optional<Comment> getById(Long id);
 
+//    List<Comment> findByPost_id(Long id);
+
+//    List<CommentSummary> findByPost_id(Long id);
+
+    /* Dynamic Projection */
+    <T> List<T> findByPost_id(Long id, Class<T> type);
+
 }
