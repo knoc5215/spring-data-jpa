@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +41,7 @@ public interface CommentRepository extends MyRepository<Comment, Long>, JpaSpeci
 //    List<CommentSummary> findByPost_id(Long id);
 
     /* Dynamic Projection */
+    @Transactional(readOnly = true)
     <T> List<T> findByPost_id(Long id, Class<T> type);
 
 }

@@ -3,6 +3,8 @@ package me.jumen.springdatajpa;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -17,7 +19,8 @@ import static me.jumen.springdatajpa.CommentSpecs.isBest;
 import static me.jumen.springdatajpa.CommentSpecs.isGood;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
+//@DataJpaTest
+@SpringBootTest
 class CommentRepositoryTest {
 
     @Autowired
