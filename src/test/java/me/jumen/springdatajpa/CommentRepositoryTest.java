@@ -13,6 +13,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
+import static me.jumen.springdatajpa.CommentSpecs.isBest;
+import static me.jumen.springdatajpa.CommentSpecs.isGood;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -171,6 +173,13 @@ class CommentRepositoryTest {
             System.out.println("=====================");
             System.out.println(c.getComment());
         });
+    }
+
+    @Test
+    public void specs() {
+        Page<Comment> page = commentRepository
+                .findAll(isBest().or(isGood()), PageRequest.of(0, 10));
+
     }
 
 

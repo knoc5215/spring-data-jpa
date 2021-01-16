@@ -3,7 +3,6 @@ package me.jumen.springdatajpa;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.inject.Named;
 import javax.persistence.*;
 import java.util.Date;
 
